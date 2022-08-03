@@ -24,7 +24,7 @@ const taskSchema = mongoose.Schema ({
     priority: {
         type: String,
         required: true,
-        enum: ["Baja", "Median", "Alta"],
+        enum: ["Baja", "Media", "Alta"],
     },
     project: {
         type: mongoose.Schema.Types.ObjectId, //cada tarea tiene un proyecto asociado para relacionarlas

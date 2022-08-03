@@ -24,6 +24,13 @@ const projectSchema = mongoose.Schema({ //el model de project
         type: mongoose.Schema.Types.ObjectId, //para relacionar el creador con un usuario ya creado
         ref: 'User' //referido al model de Usuario
     },
+    tasks: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Task',
+            
+        }
+    ],
     collaborators: [ //porque puede haber varios colaboradores 
         {
             type: mongoose.Schema.Types.ObjectId, //para relacionar el creador con un usuario ya creado

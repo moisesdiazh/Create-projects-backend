@@ -3,7 +3,7 @@ import Task from '../models/Task.js';
 
 const getProjects = async(req, res) => { //para obtener proyectos
 
-    const projects = await Project.find().where('owner').equals(req.user);
+    const projects = await Project.find().where('owner').equals(req.user).select("-tasks");
                 //busca los proyectos donde el creador es igual al req.user, donde aparece el nombre, el id, etc
     
     res.json(projects); //mandamos la respueta json de los proyectos filtrados por usuario logueado
@@ -33,7 +33,7 @@ const getProject = async(req, res) => { //para obtener proyecto y las tareas aso
                             //el id es de proyecto
     // console.log(id);
 
-    const project = await Project.findById(id);
+    const project = await Project.findById(id).populate('tasks'); //populate para que nos muestre las tareas asociadas al proyecto
 
     console.log(project);
     if(!project) { //si no existe el proyecto
@@ -49,12 +49,12 @@ const getProject = async(req, res) => { //para obtener proyecto y las tareas aso
 
     //Obtener las tareas del proyecto
                     //buscamos las tareas donde project es igual al id del proyecto en el modelo de project
-    const task = await Task.find().where("project").equals(project._id);
+    // const task = await Task.find().where("project").equals(project._id);
 
-    res.json({
+    res.json(
         project,
-        task,
-    });
+        // task,
+    );
 };
 
 const editProject = async(req, res) => { //para editar proyecto 
