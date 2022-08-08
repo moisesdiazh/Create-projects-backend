@@ -5,8 +5,10 @@ import {
     getProject,
     editProject,
     deleteProject,
+    searchCollaborator,
     addCollaborator,
     deleteCollaborator,
+    
 }from "../controllers/projectController.js"; // importamos el controlador de proyecto
 import checkAuth from "../middleware/checkAuth.js"; //importamos el middleware
 
@@ -21,8 +23,10 @@ router //como son rutas que necesitan que pasen el id y son iguales se puede col
     .put(checkAuth, editProject)    //cuando sea metodo put hace editProject
     .delete(checkAuth, deleteProject);   //cuando sea metodo delete hace deleteProject
 
-router.post("/agregar-colaborador/:id", checkAuth, addCollaborator); //para añadir colaborador
-router.post("/eliminar-colaborador/:id", checkAuth, deleteCollaborator); //para eliminar colaborador
+
+router.post("/colaboradores", checkAuth, searchCollaborator); //para añadir colaborador
+router.post("/colaboradores/:id", checkAuth, addCollaborator); //para añadir colaborador
+router.delete("/colaboradores/:id", checkAuth, deleteCollaborator); //para eliminar colaborador
 
 
 export default router;
