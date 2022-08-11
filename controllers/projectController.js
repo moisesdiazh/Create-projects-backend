@@ -38,9 +38,8 @@ const getProject = async (req, res) => {
   //el id es de proyecto
   // console.log(id);
 
-  const project = await Project.findById(id).populate("tasks"); //populate para que nos muestre las tareas asociadas al proyecto
+  const project = await Project.findById(id).populate("tasks").populate("collaborators", "nombre email"); //populate para que nos muestre las tareas asociadas al proyecto
 
-  console.log(project);
   if (!project) {
     //si no existe el proyecto
     const error = new Error("No encontrado.");
@@ -194,6 +193,30 @@ const addCollaborator = async (req, res) => {
 
 const deleteCollaborator = async (req, res) => {
   //eliminar colaborador
+
+  const project = await Project.findById(req.params.id);
+
+  if (!project) {
+    const error = new Error("Este proyecto no ha sido encontrado");
+
+    return res.status(404).json({ msg: error.message });
+  }
+
+  if (project.owner.toString() !== req.user._id.toString()) {
+    const error = new Error("Acción no válida");
+
+    return res.status(404).json({ msg: error.message });
+  }
+
+  //eliminamos el colaborador al proyecto
+  project.collaborators.pull(req.body.id); // pull es para sacar un elemento de un arreglo
+
+  // console.log(project);
+
+  await project.save();
+  res.json({msg: "Colaborador eliminado de forma correcta"})
+
+
 };
 
 // const getTasks = async(req, res) => { //No utilizamos este getTasks porque lo hacemos en getProject

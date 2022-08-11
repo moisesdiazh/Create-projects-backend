@@ -26,7 +26,8 @@ router //como son rutas que necesitan que pasen el id y son iguales se puede col
 
 router.post("/colaboradores", checkAuth, searchCollaborator); //para añadir colaborador
 router.post("/colaboradores/:id", checkAuth, addCollaborator); //para añadir colaborador
-router.delete("/colaboradores/:id", checkAuth, deleteCollaborator); //para eliminar colaborador
+router.post("/eliminar-colaborador/:id", checkAuth, deleteCollaborator); 
+//para eliminar colaborador, si queremos enviar valores tiene que ser post, no puede ser delete
 
 
 export default router;
