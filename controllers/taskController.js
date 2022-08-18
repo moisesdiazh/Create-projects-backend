@@ -124,7 +124,7 @@ const deleteTask = async (req, res) => {
 };
 
 const changeStatus = async (req, res) => {
-
+    console.log(req.params.id);
 };
 
 export {

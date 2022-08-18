@@ -4,10 +4,13 @@ import User from "../models/User.js";
 const getProjects = async (req, res) => {
   //para obtener proyectos
 
-  const projects = await Project.find()
-    .where("owner")
-    .equals(req.user)
-    .select("-tasks");
+  const projects = await Project.find({
+    $or: [
+      //colocamos una condicion de or para que cuando haga el find
+      { collaborators: { $in: req.user } }, //busque los colaboladores y los propetarios del project
+      { owner: req.user },
+    ],
+  }).select("-tasks");
   //busca los proyectos donde el creador es igual al req.user, donde aparece el nombre, el id, etc
 
   res.json(projects); //mandamos la respueta json de los proyectos filtrados por usuario logueado
@@ -38,7 +41,9 @@ const getProject = async (req, res) => {
   //el id es de proyecto
   // console.log(id);
 
-  const project = await Project.findById(id).populate("tasks").populate("collaborators", "nombre email"); //populate para que nos muestre las tareas asociadas al proyecto
+  const project = await Project.findById(id)
+    .populate("tasks")
+    .populate("collaborators", "nombre email"); //populate para que nos muestre las tareas asociadas al proyecto
 
   if (!project) {
     //si no existe el proyecto
@@ -47,7 +52,12 @@ const getProject = async (req, res) => {
   }
 
   // de esta forma hacemos que el usuario que pueda acceder solamente sea quien lo creo
-  if (project.owner.toString() !== req.user._id.toString()) {
+  if (
+    project.owner.toString() !== req.user._id.toString() &&
+    !project.collaborators.some(
+      (collaborator) => collaborator.id === req.user._id.toString()
+    )
+  ) {
     const error = new Error("Acción no válida."); //los mensajes de error
     return res.status(401).json({ msg: error.message });
   }
@@ -173,13 +183,15 @@ const addCollaborator = async (req, res) => {
   }
 
   //verificamos que el colaborador no es el admin del proyecto
-  if(project.owner.toString() === user._id.toString()){
-    const error = new Error("El creador del proyecto no puede ser un colaborador");
+  if (project.owner.toString() === user._id.toString()) {
+    const error = new Error(
+      "El creador del proyecto no puede ser un colaborador"
+    );
     return res.status(404).json({ msg: error.message });
   }
 
   //revisar que no este agregado al proyecto el colaborador
-  if(project.collaborators.includes(user._id)){
+  if (project.collaborators.includes(user._id)) {
     const error = new Error("El usuario ya es colaborador del proyecto");
     return res.status(404).json({ msg: error.message });
   }
@@ -187,8 +199,7 @@ const addCollaborator = async (req, res) => {
   //agregamos el colaborador al proyecto
   project.collaborators.push(user._id);
   await project.save();
-  res.json({msg: "Colaborador agregado de forma correcta"})
-
+  res.json({ msg: "Colaborador agregado de forma correcta" });
 };
 
 const deleteCollaborator = async (req, res) => {
@@ -214,9 +225,7 @@ const deleteCollaborator = async (req, res) => {
   // console.log(project);
 
   await project.save();
-  res.json({msg: "Colaborador eliminado de forma correcta"})
-
-
+  res.json({ msg: "Colaborador eliminado de forma correcta" });
 };
 
 // const getTasks = async(req, res) => { //No utilizamos este getTasks porque lo hacemos en getProject
