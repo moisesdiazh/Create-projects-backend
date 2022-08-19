@@ -157,11 +157,13 @@ const changeStatus = async (req, res) => {
   }
 
   task.status = !task.status;
+  task.complete = req.user._id;
   await task.save();
-  res.json(task);
-
-
-  console.log(task.status);
+  
+  const taskSaved = await Task.findById(id).populate("project").populate("complete");
+  
+  res.json(taskSaved);
+  // console.log(task.status);
 };
 
 export { addTask, getTask, updateTask, deleteTask, changeStatus };

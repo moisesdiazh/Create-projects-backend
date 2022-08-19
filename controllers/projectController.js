@@ -41,8 +41,11 @@ const getProject = async (req, res) => {
   //el id es de proyecto
   // console.log(id);
 
-  const project = await Project.findById(id)
-    .populate("tasks")
+  const project = await Project.findById(id) //seleccionamos solo el nombre
+    .populate({
+      path: "tasks",
+      populate: { path: "complete", select: "nombre" },
+    }) //añadimos un populate a un populate
     .populate("collaborators", "nombre email"); //populate para que nos muestre las tareas asociadas al proyecto
 
   if (!project) {

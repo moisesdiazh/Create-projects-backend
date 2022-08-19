@@ -30,6 +30,10 @@ const taskSchema = mongoose.Schema ({
         type: mongoose.Schema.Types.ObjectId, //cada tarea tiene un proyecto asociado para relacionarlas
         ref: "Project"
     },
+    complete: {
+        type: mongoose.Schema.Types.ObjectId, //cada tarea tiene un proyecto asociado para relacionarlas
+        ref: "User"
+    }
 
 }, 
     {
