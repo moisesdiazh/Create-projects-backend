@@ -115,7 +115,7 @@ const deleteTask = async (req, res) => {
 
     //eliminamos la referencia que tenemos de la tarea en el project
     const project = await Project.findById(task.project);
-    project.task.pull(task._id);
+    // project.task.pull(task._id);
 
     await Promise.allSettled([await project.save(), await task.deleteOne()]);
     //allSettled es para colocar un arreglo con diferentes awaits y se cumplan en paralelo
