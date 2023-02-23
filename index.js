@@ -21,29 +21,29 @@ dotenv.config(); //para ocultar las variables de entorno en env
 connectDB(); //nos conectamos con la base de datos
 
 
-const whitelist = [process.env.FRONTEND_URL]; //para que pueda comunicarse con el frontend
+// const whitelist = [process.env.FRONTEND_URL]; //para que pueda comunicarse con el frontend
 
-// console.log(whitelist);
+// // console.log(whitelist);
 
-const corsOptions = {
-    origin: function(origin, callback){
-        if(whitelist.includes(origin)){
-            callback(null, true);
-        }else{
-            callback(new Error('No permitido por CORS'));
-        }
-    },
-};
+// const corsOptions = {
+//     origin: function(origin, callback){
+//         if(whitelist.includes(origin)){
+//             callback(null, true);
+//         }else{
+//             callback(new Error('No permitido por CORS'));
+//         }
+//     },
+// };
 
-app.use(cors(corsOptions)); //para que pueda comunicarse con el frontend  
+// app.use(cors(corsOptions)); //para que pueda comunicarse con el frontend  
 
-// app.use(cors({
-//     'allowedHeaders': ['sessionId', 'Content-Type'],
-//     'exposedHeaders': ['sessionId'],
-//     'origin': '*',
-//     'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//     'preflightContinue': false
-//   }));
+app.use(cors({
+    'allowedHeaders': ['sessionId', 'Content-Type'],
+    'exposedHeaders': ['sessionId'],
+    'origin': '*',
+    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    'preflightContinue': false
+  }));
 
 //Routing
 app.use('/api/users', userRoutes);
